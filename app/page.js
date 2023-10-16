@@ -1,95 +1,60 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+
+import styles from "./page.module.css"
+import SumsubWebSdk from "@sumsub/websdk-react"
+import { useEffect } from "react"
 
 export default function Home() {
+  const TOKEN = "YOUR VALID TOKEN"
+
+  // IN CASE YOU NEED TO FETCH TOKEN FROM SERVER...
+
+  // const SERVER = "YOUR VALID SERVER API"
+
+  // useEffect(() => {
+  //   fetchToken()
+  // }, [])
+
+  // const fetchToken = async () => {
+  //   try {
+  //     const response = await fetch(SERVER)
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok")
+  //     }
+  //     const data = await response.json()
+  //     const currentToken = data.token.token
+  //     // console.log(currentToken)
+  //     return currentToken
+  //   } catch (error) {
+  //     console.error("Error fetching data: ", error)
+  //   }
+  // }
+
+  // const handler = () => Promise.resolve(fetchToken())
+  const handler = () => Promise.resolve(TOKEN)
+  const options = {}
+  const messageHandler = (message) => console.log(message)
+  const errorHandler = (error) => console.log(error)
+
+  const config = {
+    lang: "en",
+    email: "applicantEmail",
+    phone: "applicantPhone",
+    i18n: "customI18nMessages",
+    onMessage: (type, payload) => {
+      console.log("WebSDK onMessage", type, payload)
+    },
+    uiConf: {
+      customCss: "https://url.com/styles.css",
+    },
+    onError: (error) => {
+      console.error("WebSDK onError", error)
+    },
+  }
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <SumsubWebSdk accessToken={TOKEN} expirationHandler={handler} config={config} options={options} onMessage={messageHandler} onError={errorHandler} />
     </main>
   )
 }
