@@ -6,9 +6,9 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 
 export default function Home() {
-  const TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" // EXAMPLE TOKEN
+  const TOKEN = "_act-sbx-5f9ae53f-1cb1-42c0-a7f3-f31f48242887" // EXAMPLE TOKEN
   // IN CASE YOU NEED TO FETCH TOKEN FROM SERVER...
-  const SERVER = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  const SERVER = "http://192.168.0.171:3000/sumsub-access-token"
 
   // useEffect(() => {
   //   fetchToken()
