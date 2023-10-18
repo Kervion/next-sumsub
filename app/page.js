@@ -6,15 +6,20 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 
 export default function Home() {
-  const TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" // EXAMPLE TOKEN
-  // IN CASE YOU NEED TO FETCH TOKEN FROM SERVER...
-  const SERVER = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  const SERVER = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-  // useEffect(() => {
-  //   fetchToken()
-  // }, [])
+  useEffect(() => {
+    fetchToken(false)
+  }, [])
 
-  const fetchToken = async () => {
+  // HERE I ADDED TWO STATES TO HANDLE TOKEN FETCHING
+  // tokenReady - to show button only when token is fet
+  // token - to store token and pass it to SumsubWebSdk component
+
+  const [tokenReady, setTokenReady] = useState(false)
+  const [token, setToken] = useState(null)
+
+  const fetchToken = async (refresh) => {
     try {
       const response = await fetch(SERVER)
       if (!response.ok) {
@@ -22,15 +27,19 @@ export default function Home() {
       }
       const data = await response.json()
       const currentToken = data.token.token
-      // console.log(currentToken)
-      return currentToken
+      if (refresh) {
+        setToken(currentToken)
+        return currentToken
+      } else {
+        setToken(currentToken)
+        setTokenReady(true)
+      }
     } catch (error) {
       console.error("Error fetching data: ", error)
     }
   }
 
-  const handler = () => Promise.resolve(fetchToken())
-  // const handler = () => Promise.resolve(TOKEN)
+  const handler = () => Promise.resolve(fetchToken(true))
   const options = {}
   const messageHandler = (message) => console.log(message)
   const errorHandler = (error) => console.log(error)
@@ -44,7 +53,7 @@ export default function Home() {
       console.log("WebSDK onMessage", type, payload)
     },
     uiConf: {
-      customCss: "https://url.com/styles.css",
+      // customCss: "https://url.com/styles.css", // optional, if you need to customize styles
     },
     onError: (error) => {
       console.error("WebSDK onError", error)
@@ -53,8 +62,6 @@ export default function Home() {
 
   const openSumsub = () => {
     setDisplaySumsub((prev) => !prev)
-    // alert("openSumsub")
-    // fetchToken()
   }
 
   const [displaySumsub, setDisplaySumsub] = useState(false)
@@ -62,14 +69,16 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <div style={{ display: "flex", flexDirection: "column", margin: 10 }}>
-        <button onClick={openSumsub} type="button">
-          {displaySumsub ? "Close Card" : "Open Sumsub Card"}
-        </button>
+        {tokenReady && (
+          <button onClick={openSumsub} type="button">
+            {displaySumsub ? "Close Card" : "Open Sumsub Card"}
+          </button>
+        )}
         <Image src="/screen.jpg" width={270} height={600} alt="screen" />
       </div>
 
       <div style={{ width: 270, margin: 10 }}>
-        {displaySumsub && <SumsubWebSdk accessToken={TOKEN} expirationHandler={handler} config={config} options={options} onMessage={messageHandler} onError={errorHandler} />}
+        {displaySumsub && <SumsubWebSdk accessToken={token} expirationHandler={handler} config={config} options={options} onMessage={messageHandler} onError={errorHandler} />}
       </div>
     </main>
   )
